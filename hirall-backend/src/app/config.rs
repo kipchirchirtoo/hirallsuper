@@ -27,9 +27,10 @@ impl Config {
         Self {
             server_host: env::var("SERVER_HOST").unwrap_or_else(|_| "0.0.0.0".to_string()),
             server_port: env::var("SERVER_PORT")
+                .or_else(|_| env::var("PORT"))
                 .unwrap_or_else(|_| "8080".to_string())
                 .parse()
-                .expect("SERVER_PORT must be a valid u16"),
+                .expect("SERVER_PORT or PORT must be a valid u16"),
             environment: env::var("ENVIRONMENT").unwrap_or_else(|_| "development".to_string()),
             database_url: env::var("DATABASE_URL").expect("DATABASE_URL must be set"),
             database_max_connections: env::var("DATABASE_MAX_CONNECTIONS")

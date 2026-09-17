@@ -1,0 +1,31 @@
+# ==============================================================================
+# Render Blueprint for Hirall Backend
+# https://render.com/docs/blueprint-spec
+# ==============================================================================
+
+services:
+  - type: web
+    name: hirall-backend
+    runtime: docker
+    dockerfilePath: ./hirall-backend/Dockerfile
+    dockerContext: ./hirall-backend
+    plan: free
+    region: frankfurt
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: SERVER_HOST
+        value: 0.0.0.0
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_MAX_CONNECTIONS
+        value: 10
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION_HOURS
+        value: 24
+      - key: JWT_REFRESH_EXPIRATION_DAYS
+        value: 30
