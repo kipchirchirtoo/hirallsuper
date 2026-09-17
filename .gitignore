@@ -27,6 +27,8 @@ service_account.json
 # ------------------------------------------------------------------------------
 target/
 **/target/
+**/.cargo/
+.cargo/
 **/*.rs.bk
 CACHEDIR.TAG
 Cargo.lock.bak
@@ -42,6 +44,8 @@ Cargo.lock.bak
 **/.pub-cache/
 **/.pub/
 **/ephemeral/
+local.properties
+**/local.properties
 
 # Binaries and platform build outputs
 *.apk
