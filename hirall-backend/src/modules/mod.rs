@@ -1,0 +1,13 @@
+pub mod branches;
+pub mod compliance;
+pub mod devices;
+pub mod finance;
+pub mod hospitality;
+pub mod hr;
+pub mod inventory;
+pub mod organizations;
+pub mod pos;
+pub mod procurement;
+pub mod products;
+pub mod users;
+pub mod warehouse;

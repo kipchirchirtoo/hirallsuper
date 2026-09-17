@@ -1,0 +1,110 @@
+# ==============================================================================
+# Git Ignore for HirallSuper Monorepo
+# Covers Rust backend, Flutter Desktop & Mobile, Web Admin, and Environment Security
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Critical Security: Secrets, Credentials, & Environment Variables
+# ------------------------------------------------------------------------------
+.env
+.env.*
+*.env
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+credentials.json
+service_account.json
+*secret*
+!*secret*.rs
+!*secret*.dart
+
+# ------------------------------------------------------------------------------
+# 2. Rust Build & Target Artifacts
+# ------------------------------------------------------------------------------
+target/
+**/target/
+**/*.rs.bk
+CACHEDIR.TAG
+Cargo.lock.bak
+
+# ------------------------------------------------------------------------------
+# 3. Flutter & Dart Build & Dependency Artifacts
+# ------------------------------------------------------------------------------
+**/.dart_tool/
+**/build/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/.pub-cache/
+**/.pub/
+**/ephemeral/
+
+# Binaries and platform build outputs
+*.apk
+*.aab
+*.exe
+*.dll
+*.so
+*.dylib
+*.zip
+*.tar.gz
+*.iso
+*.deb
+*.rpm
+*.app
+*.dmg
+
+# ------------------------------------------------------------------------------
+# 4. Database, SQLite & Local Dumps
+# ------------------------------------------------------------------------------
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.sql.bak
+
+# ------------------------------------------------------------------------------
+# 5. Python & Virtual Environments
+# ------------------------------------------------------------------------------
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+**/venv/
+**/.venv/
+**/env/
+
+# ------------------------------------------------------------------------------
+# 6. Node & Web Ephemera
+# ------------------------------------------------------------------------------
+**/node_modules/
+**/.next/
+**/dist/
+**/.cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ------------------------------------------------------------------------------
+# 7. Scratch, Temporary & Log Files
+# ------------------------------------------------------------------------------
+**/scratch/
+scratch/
+*.log
+logs/
+*.tmp
+*.temp
+
+# ------------------------------------------------------------------------------
+# 8. Operating System & Editor Metadata
+# ------------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
