@@ -36,6 +36,7 @@ class AdminDashboardScreen extends StatefulWidget {
 
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   String _selectedTab = 'users'; // Default to first sidebar menu (Staff & Station PINs)
+  String _licenseKey = 'HPOS-PROD-ACTIVE';
 
   Future<Uint8List?> _getLogoBytes() async {
     try {
@@ -369,7 +370,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                             return AdminReceiptDesignerView(
                               organizationName: widget.organizationName,
                               branchName: widget.branchName,
-                              branchId: widget.branchId,
                             );
                           case 'movements':
                             return AdminStockMovementsView(
@@ -381,7 +381,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                             return AdminAuditLogsView(
                               organizationName: widget.organizationName,
                               branchName: widget.branchName,
-                              branchId: widget.branchId,
                             );
                           case 'settings':
                             return _buildStoreSettingsTab(context);

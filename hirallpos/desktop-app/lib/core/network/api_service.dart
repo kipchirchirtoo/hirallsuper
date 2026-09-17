@@ -77,45 +77,6 @@ class ApiService {
     return [];
   }
 
-  // 2b. Hardware Tills & POS Register Devices
-  Future<List<dynamic>> getDevices({String? branchId}) async {
-    try {
-      final uri = Uri.parse('$baseUrl/devices').replace(
-        queryParameters: {
-          if (branchId != null && branchId.isNotEmpty) 'branch_id': branchId,
-        },
-      );
-      final response = await http.get(uri, headers: _headers);
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body) as List<dynamic>;
-      }
-    } catch (_) {}
-    return [];
-  }
-
-  Future<Map<String, dynamic>> registerDevice({
-    required String branchId,
-    required String deviceName,
-    required String deviceUuid,
-    String? deviceType,
-  }) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/devices/register'),
-      headers: _headers,
-      body: jsonEncode({
-        'branch_id': branchId,
-        'device_name': deviceName,
-        'device_uuid': deviceUuid,
-        'device_type': deviceType ?? 'RETAIL_POS',
-        'platform': 'WINDOWS',
-      }),
-    );
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return jsonDecode(response.body);
-    }
-    throw Exception('Failed to register device: ${response.body}');
-  }
-
   // 3. Email/Password Login
   Future<Map<String, dynamic>> login({
     required String email,

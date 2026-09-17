@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -319,7 +320,7 @@ class _AdminStockMovementsViewState extends State<AdminStockMovementsView> {
                       ),
                       const SizedBox(width: 12),
                       ElevatedButton.icon(
-                        onPressed: () {
+                        onPressed: () async {
                           final qty = int.tryParse(qtyController.text) ?? 0;
                           if (qty <= 0) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -338,6 +339,7 @@ class _AdminStockMovementsViewState extends State<AdminStockMovementsView> {
                           );
                           final prodId = (prod['id'] ?? '').toString();
                           final prodName = (prod['name'] ?? sku).toString();
+                          final prefs = await SharedPreferences.getInstance();
                           final effectiveBranchId = widget.branchId ?? prefs.getString(AppConstants.keyBranchId) ?? '';
 
                           if (prodId.isNotEmpty && effectiveBranchId.isNotEmpty) {
