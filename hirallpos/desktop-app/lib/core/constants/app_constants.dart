@@ -6,7 +6,7 @@ class AppConstants {
   // hirall-backend (Rust Axum) listens on port 8080
   static const String defaultApiUrl = String.fromEnvironment(
     'API_URL',
-    defaultValue: 'http://127.0.0.1:8080/api/v1',
+    defaultValue: 'https://giftmart.hirall.com/api/v1',
   );
 
   // Currency & Fiscal Settings

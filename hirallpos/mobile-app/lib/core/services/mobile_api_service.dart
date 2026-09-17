@@ -9,7 +9,7 @@ class MobileApiService {
 
   MobileApiService._internal();
 
-  String _baseUrl = 'http://10.0.2.2:8080/api/v1';
+  String _baseUrl = const String.fromEnvironment('API_URL', defaultValue: 'https://giftmart.hirall.com/api/v1');
   String? _token;
   String _organizationId = '67fe86f9-3f43-4db3-9d2d-aaa5fafcf3ad';
   String _branchId = '5309fdb8-4344-43eb-9b5b-e9cedd308470';
@@ -28,11 +28,10 @@ class MobileApiService {
   }
 
   String _detectDefaultBaseUrl() {
-    if (kIsWeb) {
-      return 'http://127.0.0.1:8080/api/v1';
-    }
-    // Default for Android Emulator to access host machine backend
-    return 'http://10.0.2.2:8080/api/v1';
+    return const String.fromEnvironment(
+      'API_URL',
+      defaultValue: 'https://giftmart.hirall.com/api/v1',
+    );
   }
 
   Future<void> configure({

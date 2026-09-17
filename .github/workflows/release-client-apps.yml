@@ -1,0 +1,120 @@
+name: Release Hirall POS Apps (Desktop & Mobile)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release version tag (e.g. v2.0.0)'
+        required: true
+        default: 'v2.0.0'
+
+permissions:
+  contents: write
+
+jobs:
+  build-android-apk:
+    name: Build Android POS APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        working-directory: hirallpos/mobile-app
+        run: flutter pub get
+
+      - name: Build Android APK
+        working-directory: hirallpos/mobile-app
+        run: flutter build apk --release --dart-define=API_URL=https://giftmart.hirall.com/api/v1
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hirall-mobile-pos-apk
+          path: hirallpos/mobile-app/build/app/outputs/flutter-apk/app-release.apk
+
+  build-windows-exe:
+    name: Build Windows Desktop POS (.EXE)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Enable Windows Desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Install Dependencies
+        working-directory: hirallpos/desktop-app
+        run: flutter pub get
+
+      - name: Build Windows Desktop Release
+        working-directory: hirallpos/desktop-app
+        run: flutter build windows --release --dart-define=API_URL=https://giftmart.hirall.com/api/v1
+
+      - name: Package Windows ZIP
+        shell: pwsh
+        run: |
+          Compress-Archive -Path hirallpos/desktop-app/build/windows/x64/runner/Release/* -DestinationPath hirall-pos-desktop-windows-x64.zip
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hirall-pos-desktop-windows-zip
+          path: hirall-pos-desktop-windows-x64.zip
+
+  create-github-release:
+    name: Publish GitHub Release
+    needs: [build-android-apk, build-windows-exe]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download APK Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: hirall-mobile-pos-apk
+          path: ./release-assets
+
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: hirall-pos-desktop-windows-zip
+          path: ./release-assets
+
+      - name: Prepare Release Filenames
+        run: |
+          TAG="${{ github.event.inputs.release_tag || github.ref_name }}"
+          mv release-assets/app-release.apk release-assets/hirall-mobile-pos-${TAG}.apk || true
+          mv release-assets/hirall-pos-desktop-windows-x64.zip release-assets/hirall-pos-desktop-windows-${TAG}.zip || true
+          ls -lh release-assets
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.release_tag || github.ref_name }}
+          name: Hirall Supermarket POS ${{ github.event.inputs.release_tag || github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: |
+            release-assets/*.apk
+            release-assets/*.zip

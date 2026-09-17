@@ -1,0 +1,53 @@
+name: Backend CI & Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'hirall-backend/**'
+      - 'render.yaml'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'hirall-backend/**'
+  workflow_dispatch:
+
+jobs:
+  check-and-test:
+    name: Check Rust Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: hirall-backend
+
+      - name: Check Formatting & Syntax
+        working-directory: hirall-backend
+        run: |
+          cargo check --release
+
+  trigger-render-deploy:
+    name: Trigger Render Deploy Hook (Optional)
+    needs: check-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Render Deploy Hook
+        if: env.RENDER_DEPLOY_HOOK != ''
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          echo "Triggering Render deployment..."
+          curl -X POST "$RENDER_DEPLOY_HOOK"

@@ -1,6 +1,6 @@
 const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '192.168.100.30')
   ? `http://${window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '127.0.0.1' : window.location.hostname}:8080/api/v1`
-  : '/api/v1';
+  : 'https://giftmart.hirall.com/api/v1';
 
 let currentView = 'login';
 let currentStep = 1;
