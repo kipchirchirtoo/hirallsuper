@@ -1,14 +1,14 @@
 # ---------------------------------------------------
 # Multi-stage Docker build for hirall-backend
 # ---------------------------------------------------
-FROM rust:1.80-alpine AS builder
+FROM rust:alpine AS builder
 
 RUN apk add --no-cache musl-dev pkgconfig openssl-dev
 
 WORKDIR /app
 
 # Cache dependency builds
-COPY Cargo.toml ./
+COPY Cargo.toml Cargo.lock* ./
 RUN mkdir src && echo "fn main() {}" > src/main.rs
 RUN cargo build --release || true
 
